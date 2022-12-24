@@ -27,37 +27,47 @@ public_users.post("/register", (req, res) => {
 
 // Get the book list available in the shop
 public_users.get('/', function (req, res) {
-    res.send(JSON.stringify({ books }, null, 4));
+    books.then(allBooks => {
+        res.send(JSON.stringify({ allBooks }, null, 4));
+    })
 });
 
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn', function (req, res) {
     let isbn = req.params.isbn;
-    let bookDetails = books[isbn];
-    res.send(JSON.stringify({ bookDetails }, null, 4));
+    books.then(allBooks => {
+        let bookDetails = allBooks[isbn];
+        res.send(JSON.stringify({ bookDetails }, null, 4));
+    })
 });
 
 // Get book details based on author
 public_users.get('/author/:author', function (req, res) {
     let author = req.params.author;
-    let book_list = Object.entries(books);
-    let bookDetails = Object.fromEntries(book_list.filter(item => item[1].author === author));
-    res.send(JSON.stringify({ bookDetails }, null, 4));
+    books.then(allBooks => {
+        let book_list = Object.entries(allBooks);
+        let bookDetails = Object.fromEntries(book_list.filter(item => item[1].author === author));
+        res.send(JSON.stringify({ bookDetails }, null, 4));
+    })
 });
 
 // Get all books based on title
 public_users.get('/title/:title', function (req, res) {
     let title = req.params.title;
-    let book_list = Object.entries(books);
-    let bookDetails = Object.fromEntries(book_list.filter(item => item[1].title === title));
-    res.send(JSON.stringify({ bookDetails }, null, 4));
+    books.then(allBooks => {
+        let book_list = Object.entries(allBooks);
+        let bookDetails = Object.fromEntries(book_list.filter(item => item[1].title === title));
+        res.send(JSON.stringify({ bookDetails }, null, 4));
+    })
 });
 
 //  Get book review
 public_users.get('/review/:isbn', function (req, res) {
     const isbn = req.params.isbn;
-    const reviews = books[isbn].reviews;
-    res.send(JSON.stringify({ reviews }, null, 4));
+    books.then(allBooks => {
+        const reviews = allBooks[isbn].reviews;
+        res.send(JSON.stringify({ reviews }, null, 4));
+    })
 });
 
 module.exports.general = public_users;

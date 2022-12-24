@@ -1,9 +1,9 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
-var _ = require('lodash');
+const _ = require('lodash');
+
 let books = require("./booksdb.js");
 const regd_users = express.Router();
-
 let users = [];
 
 const isValid = (username) => {
@@ -67,9 +67,11 @@ regd_users.delete("/auth/review/:isbn", (req, res) => {
     const isbn = req.params.isbn;
     const user = getUserFromSession(req);
 
-    delete books[isbn]['reviews'][user];
 
+    delete books[isbn]['reviews'][user];
     return res.status(200).json({ message: `${user}'s review on ${books[isbn]['title']} has been deleted`, reviews: books[isbn]['reviews'] })
+
+
 })
 
 module.exports.authenticated = regd_users;
