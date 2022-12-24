@@ -51,12 +51,13 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
     const reviews = books[isbn].reviews;
     const user = getUserFromSession(req);
 
-    books[isbn]['reviews'][user] = review;
 
-    if (user in reviews) {
-        return res.status(200).send("review has been updated");
+    if (reviews.hasOwnProperty(user)) {
+        books[isbn]['reviews'][user] = review;
+        return res.status(200).json({ message: "your review has been updated", reviews: books[isbn].reviews });
     } else {
-        return res.status(200).send("review has been added")
+        books[isbn]['reviews'][user] = review;
+        return res.status(200).json({ message: "your review has been added", reviews: books[isbn].reviews })
     }
 });
 
@@ -64,9 +65,11 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
 // Delete a book review
 regd_users.delete("/auth/review/:isbn", (req, res) => {
     const isbn = req.params.isbn;
-    const reviews = books[isbn]['reviews'];
+    const user = getUserFromSession(req);
 
     delete books[isbn]['reviews'][user];
+
+    return res.status(200).json({ message: `${user}'s review on ${books[isbn]['title']} has been deleted`, reviews: books[isbn]['reviews'] })
 })
 
 module.exports.authenticated = regd_users;
